@@ -19,9 +19,10 @@ const Articles = () => {
   useEffect(() => {
     const fetchArticles = async () => {
       try {
-        const response = await getArticles();
-        if (Array.isArray(response)) {
-          setArticles(response);
+        const token = localStorage.getItem('token');
+        const response = await getArticles(token);
+        if (Array.isArray(response.data)) {
+          setArticles(response.data);
         } else {
           setError('Failed to fetch articles');
         }
@@ -36,18 +37,19 @@ const Articles = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      const token = localStorage.getItem('token');
       if (editMode) {
         const articleToUpdate = { id: currentArticle.id, title, content };
-        await updateArticle(currentArticle.id, articleToUpdate);
+        await updateArticle(token, currentArticle.id, articleToUpdate);
         setEditMode(false);
         setCurrentArticle(null);
       } else {
-        await createArticle({ title, content });
+        await createArticle(token, { title, content });
       }
       setTitle('');
       setContent('');
-      const response = await getArticles();
-      setArticles(response);
+      const response = await getArticles(token);
+      setArticles(response.data);
       setDialogOpen(false);
     } catch (err) {
       setError('Failed to create or update article');
@@ -65,9 +67,10 @@ const Articles = () => {
 
   const handleDelete = async (id) => {
     try {
-      await deleteArticle(id);
-      const response = await getArticles();
-      setArticles(response);
+      const token = localStorage.getItem('token');
+      await deleteArticle(token, id);
+      const response = await getArticles(token);
+      setArticles(response.data);
     } catch (err) {
       setError('Failed to delete article');
       console.error(err);
@@ -110,6 +113,7 @@ const Articles = () => {
         variant="contained"
         sx={{
           mt: 2,
+          mb: 4, // Added margin-bottom to create more spacing
           backgroundColor: '#ADD8E6',
           color: 'white',
           textShadow: '1px 1px 2px rgba(0, 0, 0, 0.2)',
@@ -127,10 +131,10 @@ const Articles = () => {
             <Typography variant="h6" onClick={() => handleView(article)} sx={{ cursor: 'pointer' }}>
               {article.title}
             </Typography>
-            <IconButton onClick={() => handleEdit(article)} color="primary">
+            <IconButton onClick={() => handleEdit(article)} sx={{ color: '#ADD8E6' }}>
               <EditIcon />
             </IconButton>
-            <IconButton onClick={() => handleDelete(article.id)} color="secondary">
+            <IconButton onClick={() => handleDelete(article.id)} sx={{ color: '#F08080' }}>
               <DeleteIcon />
             </IconButton>
           </Box>

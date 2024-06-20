@@ -26,6 +26,10 @@ const RegisterForm = () => {
     }
   };
 
+  const handleBackClick = () => {
+    navigate('/');
+  };
+
   return (
     <Box
       component="form"
@@ -93,6 +97,21 @@ const RegisterForm = () => {
         }}
       >
         Register
+      </Button>
+      <Button
+        variant="contained"
+        sx={{
+          mt: 2,
+          backgroundColor: '#87CEEB',
+          color: 'white',
+          textShadow: '1px 1px 2px rgba(0, 0, 0, 0.2)',
+          '&:hover': {
+            backgroundColor: '#ADD8E6',
+          },
+        }}
+        onClick={handleBackClick}
+      >
+        Back to Home
       </Button>
     </Box>
   );

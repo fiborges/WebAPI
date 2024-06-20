@@ -1,20 +1,26 @@
 import React, { useEffect, useState } from 'react';
-import { getQuestions, createQuestion } from '../api';
-import { Container, Typography, Box, TextField, Button } from '@mui/material';
+import { getQuestions, createQuestion, updateQuestion, deleteQuestion } from '../api';
+import { Container, Typography, Box, TextField, Button, IconButton, Paper, List, ListItem } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { useNavigate } from 'react-router-dom';
 
 const Questions = () => {
   const [questions, setQuestions] = useState([]);
   const [error, setError] = useState('');
   const [text, setText] = useState('');
   const [options, setOptions] = useState(['']);
+  const [editMode, setEditMode] = useState(false);
+  const [currentQuestionId, setCurrentQuestionId] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
-        const response = await getQuestions();
-        console.log('Questions response:', response); // Log the response
-        if (Array.isArray(response)) {
-          setQuestions(response);
+        const token = localStorage.getItem('token');
+        const response = await getQuestions(token);
+        if (Array.isArray(response.data)) {
+          setQuestions(response.data);
         } else {
           setError('Failed to fetch questions');
         }
@@ -29,15 +35,40 @@ const Questions = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      const token = localStorage.getItem('token');
       const newQuestion = { text, options: options.map(option => ({ text: option })) };
-      await createQuestion(newQuestion);
+      if (editMode) {
+        await updateQuestion(token, currentQuestionId, newQuestion);
+      } else {
+        await createQuestion(token, newQuestion);
+      }
       setText('');
       setOptions(['']);
-      // Fetch questions again to update the list
-      const response = await getQuestions();
-      setQuestions(response);
+      setEditMode(false);
+      setCurrentQuestionId(null);
+      const response = await getQuestions(token);
+      setQuestions(response.data);
     } catch (err) {
-      setError('Failed to create question');
+      setError(editMode ? 'Failed to update question' : 'Failed to create question');
+      console.error(err);
+    }
+  };
+
+  const handleEdit = (question) => {
+    setText(question.text);
+    setOptions(question.options.map(option => option.text));
+    setEditMode(true);
+    setCurrentQuestionId(question.id);
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      const token = localStorage.getItem('token');
+      await deleteQuestion(token, id);
+      const response = await getQuestions(token);
+      setQuestions(response.data);
+    } catch (err) {
+      setError('Failed to delete question');
       console.error(err);
     }
   };
@@ -75,10 +106,10 @@ const Questions = () => {
           fullWidth
           margin="normal"
           InputProps={{
-            style: { color: '#000000' } // Cor do texto de entrada
+            style: { color: '#000000' }
           }}
           InputLabelProps={{
-            style: { color: '#000000' } // Cor do rótulo do campo de entrada
+            style: { color: '#000000' }
           }}
         />
         {options.map((option, index) => (
@@ -91,10 +122,10 @@ const Questions = () => {
               fullWidth
               margin="normal"
               InputProps={{
-                style: { color: '#000000' } // Cor do texto de entrada
+                style: { color: '#000000' }
               }}
               InputLabelProps={{
-                style: { color: '#000000' } // Cor do rótulo do campo de entrada
+                style: { color: '#000000' }
               }}
             />
             <Button onClick={() => removeOption(index)} sx={{ ml: 2 }}>
@@ -118,19 +149,51 @@ const Questions = () => {
             },
           }}
         >
-          Add Question
+          {editMode ? 'Update Question' : 'Add Question'}
+        </Button>
+        <Button
+          onClick={() => navigate('/dashboard')}
+          variant="outlined"
+          sx={{
+            mt: 2,
+            ml: 2,
+            color: '#ADD8E6',
+            textShadow: '1px 1px 2px rgba(0, 0, 0, 0.2)',
+            '&:hover': {
+              backgroundColor: '#E0FFFF',
+            },
+          }}
+        >
+          Back
         </Button>
       </Box>
       <Box>
         {questions.map(question => (
-          <Box key={question.id} sx={{ mb: 2 }}>
-            <Typography variant="h6">{question.text}</Typography>
-            <ul>
-              {question.options.map(option => (
-                <li key={option.id}>{option.text}</li>
+          <Paper key={question.id} sx={{ mb: 2, p: 2, backgroundColor: 'rgba(224, 255, 255, 0.6)' }}>
+            <Typography variant="h6" sx={{ color: '#333', fontWeight: 'bold' }}>
+              {question.text}
+            </Typography>
+            <List>
+              {question.options.map((option, index) => (
+                <ListItem key={option.id} sx={{ color: '#555', margin: '8px 0', fontWeight: 'bold', listStyleType: 'none' }}>
+                  <span style={{ marginRight: '8px', backgroundColor: '#87CEEB', borderRadius: '50%', width: '24px', height: '24px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', color: 'white' }}>
+                    {index + 1}
+                  </span>
+                  <Typography variant="body1" component="span" sx={{ fontWeight: 'bold' }}>
+                    {option.text}
+                  </Typography>
+                </ListItem>
               ))}
-            </ul>
-          </Box>
+            </List>
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <IconButton onClick={() => handleEdit(question)} sx={{ color: '#87CEEB' }}>
+                <EditIcon />
+              </IconButton>
+              <IconButton onClick={() => handleDelete(question.id)} sx={{ color: '#F08080' }}>
+                <DeleteIcon />
+              </IconButton>
+            </Box>
+          </Paper>
         ))}
       </Box>
     </Container>

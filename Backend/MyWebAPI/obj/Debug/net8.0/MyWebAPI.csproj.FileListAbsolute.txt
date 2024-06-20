@@ -112,3 +112,4 @@
 /Users/filipa/Desktop/WebAPI/Backend/MyWebAPI/obj/Debug/net8.0/MyWebAPI.pdb
 /Users/filipa/Desktop/WebAPI/Backend/MyWebAPI/obj/Debug/net8.0/MyWebAPI.genruntimeconfig.cache
 /Users/filipa/Desktop/WebAPI/Backend/MyWebAPI/obj/Debug/net8.0/ref/MyWebAPI.dll
+/Users/filipa/Desktop/WebAPI/Backend/MyWebAPI/obj/Debug/net8.0/MyWebAPI.sourcelink.json

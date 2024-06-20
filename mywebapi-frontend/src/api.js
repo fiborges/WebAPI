@@ -2,90 +2,80 @@ import axios from 'axios';
 
 const API_URL = 'http://localhost:5166/api';
 
+// User Authentication
 const register = (username, password) => {
-  return axios.post(`${API_URL}/Auth/register`, { username, password })
-    .then(response => response.data)
-    .catch(error => {
-      if (error.response) {
-        console.error("Registration error:", error.response.data);
-      } else {
-        console.error("Registration error:", error.message);
-      }
-      throw error;
-    });
+  return axios.post(`${API_URL}/Auth/register`, { username, password });
 };
 
 const login = (username, password) => {
   return axios.post(`${API_URL}/Auth/login`, { username, password })
-    .then(response => response.data)
-    .catch(error => {
-      if (error.response) {
-        console.error("Login error:", error.response.data);
-      } else {
-        console.error("Login error:", error.message);
+    .then(response => {
+      if (response.data.token) {
+        localStorage.setItem('token', response.data.token);
       }
-      throw error;
+      return response.data;
     });
 };
 
-const getArticles = () => {
-  const token = localStorage.getItem('token');
+// Articles API
+const getArticles = (token) => {
   return axios.get(`${API_URL}/Articles`, {
     headers: { Authorization: `Bearer ${token}` }
-  })
-  .then(response => response.data)
-  .catch(error => {
-    if (error.response) {
-      console.error("Fetch articles error:", error.response.data);
-    } else {
-      console.error("Fetch articles error:", error.message);
-    }
-    throw error;
   });
 };
 
-const createArticle = (article) => {
-  const token = localStorage.getItem('token');
+const createArticle = (token, article) => {
   return axios.post(`${API_URL}/Articles`, article, {
     headers: { Authorization: `Bearer ${token}` }
   });
 };
 
-const updateArticle = (id, article) => {
-  const token = localStorage.getItem('token');
+const updateArticle = (token, id, article) => {
   return axios.put(`${API_URL}/Articles/${id}`, article, {
     headers: { Authorization: `Bearer ${token}` }
   });
 };
 
-const deleteArticle = (id) => {
-  const token = localStorage.getItem('token');
+const deleteArticle = (token, id) => {
   return axios.delete(`${API_URL}/Articles/${id}`, {
     headers: { Authorization: `Bearer ${token}` }
   });
 };
 
-const getQuestions = () => {
-  const token = localStorage.getItem('token');
+// Questions API
+const getQuestions = (token) => {
   return axios.get(`${API_URL}/Questions`, {
     headers: { Authorization: `Bearer ${token}` }
-  })
-  .then(response => response.data)
-  .catch(error => {
-    if (error.response) {
-      console.error("Fetch questions error:", error.response.data);
-    } else {
-      console.error("Fetch questions error:", error.message);
-    }
-    throw error;
   });
 };
 
-const createQuestion = (question) => {
-  const token = localStorage.getItem('token');
+const createQuestion = (token, question) => {
   return axios.post(`${API_URL}/Questions`, question, {
     headers: { Authorization: `Bearer ${token}` }
   });
 };
 
-export { register, login, getArticles, createArticle, updateArticle, deleteArticle, getQuestions, createQuestion };
+const updateQuestion = (token, id, question) => {
+  return axios.put(`${API_URL}/Questions/${id}`, question, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+};
+
+const deleteQuestion = (token, id) => {
+  return axios.delete(`${API_URL}/Questions/${id}`, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+};
+
+export {
+  register,
+  login,
+  getArticles,
+  createArticle,
+  updateArticle,
+  deleteArticle,
+  getQuestions,
+  createQuestion,
+  updateQuestion,
+  deleteQuestion
+};
