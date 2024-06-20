@@ -1,0 +1,3 @@
+Password123*
+CREATE DATABASE mywebapi;
+CREATE USER 'mywebapiuser'@'localhost' IDENTIFIED BY 'Password123*';
