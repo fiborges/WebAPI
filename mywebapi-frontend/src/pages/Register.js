@@ -19,10 +19,10 @@ const RegisterForm = () => {
       setSuccess(true);
       setTimeout(() => {
         navigate('/login');
-      }, 3000); // Redireciona para a página de login após 3 segundos
+      }, 3000);
     } catch (err) {
       setError('Registration failed. Please try again.');
-      console.error(err.response ? err.response.data : err.message); // Log detalhado do erro
+      console.error(err.response ? err.response.data : err.message);
     }
   };
 
@@ -52,10 +52,10 @@ const RegisterForm = () => {
         fullWidth
         margin="normal"
         InputProps={{
-          style: { color: '#3C3C3C' } // Cor do texto de entrada
+          style: { color: '#3C3C3C' }
         }}
         InputLabelProps={{
-          style: { color: '#3C3C3C' } // Cor do rótulo do campo de entrada
+          style: { color: '#3C3C3C' }
         }}
       />
       <TextField
@@ -67,10 +67,10 @@ const RegisterForm = () => {
         fullWidth
         margin="normal"
         InputProps={{
-          style: { color: '#3C3C3C' } // Cor do texto de entrada
+          style: { color: '#3C3C3C' }
         }}
         InputLabelProps={{
-          style: { color: '#3C3C3C' } // Cor do rótulo do campo de entrada
+          style: { color: '#3C3C3C' }
         }}
       />
       {error && (

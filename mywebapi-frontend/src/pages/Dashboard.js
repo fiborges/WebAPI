@@ -1,7 +1,7 @@
 import React from 'react';
 import { Container, Box, Button, Typography, Paper } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import backgroundImg from '../assets/background.jpg'; // Certifique-se de que a imagem de fundo esteja no caminho correto
+import backgroundImg from '../assets/background.jpg';
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -19,7 +19,7 @@ const Dashboard = () => {
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
-        backgroundAttachment: 'fixed', // Esta linha fixa a imagem de fundo
+        backgroundAttachment: 'fixed',
         padding: '20px'
       }}
     >

@@ -9,7 +9,7 @@ const Questions = () => {
   const [questions, setQuestions] = useState([]);
   const [error, setError] = useState('');
   const [text, setText] = useState('');
-  const [options, setOptions] = useState(['']);
+  const [options, setOptions] = useState([{ id: null, text: '' }]);
   const [editMode, setEditMode] = useState(false);
   const [currentQuestionId, setCurrentQuestionId] = useState(null);
   const navigate = useNavigate();
@@ -36,14 +36,18 @@ const Questions = () => {
     e.preventDefault();
     try {
       const token = localStorage.getItem('token');
-      const newQuestion = { text, options: options.map(option => ({ text: option })) };
+      const newQuestion = {
+        text,
+        options: options.map(option => ({ id: option.id === null ? 0 : option.id, text: option.text }))
+      };
       if (editMode) {
+        newQuestion.id = currentQuestionId;
         await updateQuestion(token, currentQuestionId, newQuestion);
       } else {
         await createQuestion(token, newQuestion);
       }
       setText('');
-      setOptions(['']);
+      setOptions([{ id: null, text: '' }]);
       setEditMode(false);
       setCurrentQuestionId(null);
       const response = await getQuestions(token);
@@ -56,7 +60,7 @@ const Questions = () => {
 
   const handleEdit = (question) => {
     setText(question.text);
-    setOptions(question.options.map(option => option.text));
+    setOptions(question.options.map(option => ({ id: option.id, text: option.text })));
     setEditMode(true);
     setCurrentQuestionId(question.id);
   };
@@ -74,17 +78,21 @@ const Questions = () => {
   };
 
   const handleOptionChange = (index, value) => {
-    const newOptions = [...options];
-    newOptions[index] = value;
-    setOptions(newOptions);
+    const updatedOptions = [...options];
+    updatedOptions[index].text = value;
+    setOptions(updatedOptions);
+    console.log('Updated option:', { index, value });
   };
 
   const addOption = () => {
-    setOptions([...options, '']);
+    setOptions([...options, { id: null, text: '' }]);
+    console.log('Added option:', options[options.length - 1]);
   };
 
   const removeOption = (index) => {
     setOptions(options.filter((_, i) => i !== index));
+    const removedOption = options[index];
+    console.log('Removed option:', removedOption);
   };
 
   return (
@@ -116,7 +124,7 @@ const Questions = () => {
           <Box key={index} sx={{ display: 'flex', alignItems: 'center', mt: 2 }}>
             <TextField
               label={`Option ${index + 1}`}
-              value={option}
+              value={option.text}
               onChange={(e) => handleOptionChange(index, e.target.value)}
               required
               fullWidth

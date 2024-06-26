@@ -50,9 +50,6 @@ namespace MyWebAPI.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<bool>("IsCorrect")
-                        .HasColumnType("tinyint(1)");
-
                     b.Property<int>("QuestionId")
                         .HasColumnType("int");
 

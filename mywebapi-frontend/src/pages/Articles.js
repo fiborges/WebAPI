@@ -113,7 +113,7 @@ const Articles = () => {
         variant="contained"
         sx={{
           mt: 2,
-          mb: 4, // Added margin-bottom to create more spacing
+          mb: 4,
           backgroundColor: '#ADD8E6',
           color: 'white',
           textShadow: '1px 1px 2px rgba(0, 0, 0, 0.2)',

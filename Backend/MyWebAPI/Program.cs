@@ -55,12 +55,8 @@ if (app.Environment.IsDevelopment())
     });
 }
 
-// Comment out or remove HTTPS Redirection for development
-// app.UseHttpsRedirection();
-
 app.UseRouting();
 
-// Enable CORS
 app.UseCors("AllowAll");
 
 app.UseAuthentication();

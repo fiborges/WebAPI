@@ -56,7 +56,6 @@ namespace MyWebAPI.Controllers
                 }
                 else
                 {
-                    // Log detailed error
                     Console.WriteLine($"Error updating article: {ex.Message}");
                     return StatusCode(500, "Internal server error");
                 }

@@ -5,7 +5,7 @@
 namespace MyWebAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class UpdateOptionModel : Migration
+    public partial class UpdateQuestionAndOptionModel : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

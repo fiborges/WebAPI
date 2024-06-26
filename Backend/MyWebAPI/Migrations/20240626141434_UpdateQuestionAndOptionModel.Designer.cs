@@ -11,8 +11,8 @@ using MyWebAPI.Data;
 namespace MyWebAPI.Migrations
 {
     [DbContext(typeof(MyWebAPIContext))]
-    [Migration("20240620153122_AddDefaultValueToIsCorrect")]
-    partial class AddDefaultValueToIsCorrect
+    [Migration("20240626141434_UpdateQuestionAndOptionModel")]
+    partial class UpdateQuestionAndOptionModel
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -52,9 +52,6 @@ namespace MyWebAPI.Migrations
                         .HasColumnType("int");
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<bool>("IsCorrect")
-                        .HasColumnType("tinyint(1)");
 
                     b.Property<int>("QuestionId")
                         .HasColumnType("int");

@@ -11,8 +11,8 @@ using MyWebAPI.Data;
 namespace MyWebAPI.Migrations
 {
     [DbContext(typeof(MyWebAPIContext))]
-    [Migration("20240620154017_UpdateOptionModel")]
-    partial class UpdateOptionModel
+    [Migration("20240626125516_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

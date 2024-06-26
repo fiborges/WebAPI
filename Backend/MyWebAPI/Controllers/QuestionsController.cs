@@ -41,15 +41,64 @@ namespace MyWebAPI.Controllers
         {
             if (id != question.Id)
             {
-                return BadRequest();
+                return BadRequest("Question ID mismatch");
             }
 
-            _context.Entry(question).State = EntityState.Modified;
+            var existingQuestion = await _context.Questions.Include(q => q.Options).FirstOrDefaultAsync(q => q.Id == id);
+            if (existingQuestion == null)
+            {
+                return NotFound();
+            }
+
+            existingQuestion.Text = question.Text;
+            Console.WriteLine("Existing Options:");
+            foreach (var opt in existingQuestion.Options)
+            {
+                Console.WriteLine($"Option ID: {opt.Id}, Text: {opt.Text}");
+            }
+
+            Console.WriteLine("New Options:");
+            foreach (var opt in question.Options)
+            {
+                Console.WriteLine($"Option ID: {opt.Id}, Text: {opt.Text}");
+            }
+
+            var optionsToRemove = existingQuestion.Options.Where(o => !question.Options.Any(qo => qo.Id == o.Id)).ToList();
+            Console.WriteLine("Options to Remove:");
+            foreach (var opt in optionsToRemove)
+            {
+                Console.WriteLine($"Option ID: {opt.Id}, Text: {opt.Text}");
+            }
+            foreach (var option in optionsToRemove)
+            {
+                _context.Options.Remove(option);
+            }
+
+            foreach (var option in question.Options)
+            {
+                var existingOption = existingQuestion.Options.FirstOrDefault(o => o.Id == option.Id);
+                if (existingOption != null)
+                {
+                    Console.WriteLine($"Updating Option ID: {existingOption.Id} with new text: {option.Text}");
+                    existingOption.Text = option.Text;
+                }
+                else
+                {
+                    Console.WriteLine($"Adding new Option with text: {option.Text}");
+                    existingQuestion.Options.Add(new Option
+                    {
+                        Text = option.Text,
+                        QuestionId = existingQuestion.Id
+                    });
+                }
+            }
+
+            _context.Entry(existingQuestion).State = EntityState.Modified;
             try
             {
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (DbUpdateConcurrencyException ex)
             {
                 if (!QuestionExists(id))
                 {
@@ -57,7 +106,8 @@ namespace MyWebAPI.Controllers
                 }
                 else
                 {
-                    throw;
+                    Console.WriteLine($"Error updating question: {ex.Message}");
+                    return StatusCode(500, "Internal server error");
                 }
             }
 
@@ -85,4 +135,3 @@ namespace MyWebAPI.Controllers
         }
     }
 }
-

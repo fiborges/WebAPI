@@ -1,7 +1,7 @@
 import React from 'react';
 import { Typography, Button, Box, Container, Grid } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import background from '../assets/background.jpg'; // Importando a imagem de fundo
+import background from '../assets/background.jpg';
 
 const Home = () => {
   const navigate = useNavigate();
