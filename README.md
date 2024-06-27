@@ -78,4 +78,4 @@ npm install
 npm start
 ```
 # Demonstração
-Um vídeo demonstrativo do funcionamento do projeto está disponível [aqui](https://www.linkedin.com/in/filipa-borges-72aab4151/).
+Um vídeo demonstrativo do funcionamento do projeto está disponível [aqui](https://drive.google.com/file/d/1auITHgasplVH8U22t17lrX5GYyOAr1vk/view?usp=drive_link).
